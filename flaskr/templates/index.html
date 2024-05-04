@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> domOVOy </title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='css/logo.ico') }}">
+    </head>
+    <body>
+        <a><img src="{{ url_for('static', filename='css/logo.png') }}" class="logo"></a>
+        <div class="content-bg">
+            <div class="content">
+                <div class="errors">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <ul class=flashes>
+                            {% for message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                <div class="cont">
+                    <div> Test application </div>
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
