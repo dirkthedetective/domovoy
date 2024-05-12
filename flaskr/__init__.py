@@ -29,6 +29,15 @@ def create_app(test_config=None):
     db = SQLAlchemy(app)
     bcrypt = Bcrypt(app)
 
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+    login_manager.login_view = 'login'
+
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+
     class Blog_Entry(db.Model):
         id = db.Column(db.Integer, primary_key=True)
         author_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
@@ -39,68 +48,76 @@ def create_app(test_config=None):
 
         image_link = db.Column(db.String(300))
 
+        role2 = db.relationship('User',
+        backref=db.backref('blog_entry', lazy=True))
+
         def __repr__(self):
             return '<Blog_Entry %r>' % self.id
         
     class Order_Document(db.Model):
-        order_id = db.Column(db.Integer, primary_key=True)
-        document_id = db.Column(db.Integer, primary_key=True)
-        client_id = db.Column(db.Integer, primary_key=True)
-        author_id = db.Column(db.Integer, primary_key=True)
-        design_id = db.Column(db.Integer, primary_key=True)
-        fk = db.ForeignKeyConstraint(
-            ["order_id", "client_id", "design_id"], ["order.id", "order.client_id", "order.design_id"]
-        )
-        fk2 = db.ForeignKeyConstraint(
-            ["document_id", "author_id"], ["document.id", "document.author_id"]
-        )
+        order_id = db.Column(db.Integer, db.ForeignKey('order.id'), primary_key=True)
+        document_id = db.Column(db.Integer, db.ForeignKey('document.id'), primary_key=True)
+        #client_id = db.Column(db.Integer, primary_key=True)
+        #author_id = db.Column(db.Integer, primary_key=True)
+        #design_id = db.Column(db.Integer, primary_key=True)
+        #fk = db.ForeignKeyConstraint(
+        #    ["order_id", "client_id", "design_id"], ["order.id", "order.client_id", "order.design_id"]
+        #)
+        #fk2 = db.ForeignKeyConstraint(
+        #    ["document_id", "author_id"], ["document.id", "document.author_id"]
+        #)
 
         name = db.Column(db.String(80), primary_key=True)
+
+        role = db.relationship("Order", 
+        backref=db.backref('order_document', lazy=True))
 
         def __repr__(self):
             return '<Order_Document %r>' % self.name
 
     class Design_Document(db.Model):
         design_id = db.Column(db.Integer, db.ForeignKey('design.id'), primary_key=True)
-        document_id = db.Column(db.Integer, primary_key=True)
-        client_id = db.Column(db.Integer, primary_key=True)
+        document_id = db.Column(db.Integer, db.ForeignKey('document.id'), primary_key=True)
+        #client_id = db.Column(db.Integer, primary_key=True)
         name = db.Column(db.String(80), primary_key=True)
-        fk = db.ForeignKeyConstraint(
-            ["document_id", "client_id"], ["document.id", "document.author.id"]
-        )
+        #fk = db.ForeignKeyConstraint(
+        #    ["document_id", "client_id"], ["document.id", "document.author.id"]
+        #)
 
         def __repr__(self):
             return '<Design_Document %r>' % self.name
 
     class Order(db.Model):
-        id = db.Column(db.Integer, primary_key=True)
+        id = db.Column(db.Integer, primary_key=True, unique=True)
         client_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
         design_id = db.Column(db.Integer, db.ForeignKey('design.id'), primary_key=True)
 
         creation_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now())
         finish_date = db.Column(db.DateTime)
+
+        role = db.relationship('User',
+        backref=db.backref('order', lazy=True))
         
         order_status = db.Column(db.String(20), default="Pending")
-
-        role = db.relationship('Order_Document',
-        backref=db.backref('order', lazy=True), foreign_keys="[Order_Document.fk]")
-
         def __repr__(self):
             return '<Order %r>' % self.order_status
 
     class Document(db.Model):
-        id = db.Column(db.Integer, primary_key=True)
+        id = db.Column(db.Integer, primary_key=True, unique=True)
         author_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
 
         creation_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now())
         document_type = db.Column(db.String(20))
         document_link = db.Column(db.String(300))
  
-        role = db.relationship('Order_Document',
-        backref=db.backref('document', lazy=True), foreign_keys="[Order_Document.fk2]")
+        role = db.relationship('Order_Document',        
+        backref=db.backref('document', lazy=True))
         role2 = db.relationship('Design_Document',
-        backref=db.backref('document', lazy=True), foreign_keys="[Design_Document.fk]") 
+        backref=db.backref('document', lazy=True))
         
+        role3 = db.relationship('User',
+        backref=db.backref('document', lazy=True))
+
         def __repr__(self):
             return '<Document %r>' % self.id
 
@@ -117,18 +134,11 @@ def create_app(test_config=None):
         phone_number = db.Column(db.Integer)
         account_type = db.Column(db.String(20))
 
-        role = db.relationship('Order',
-        backref=db.backref('user', lazy=True))
-        role2 = db.relationship('Blog_Entry',
-        backref=db.backref('user', lazy=True))
-        role3 = db.relationship('Document',
-        backref=db.backref('user', lazy=True))
-
         def __repr__(self):
             return '<User %r>' % self.username
 
     class Design(db.Model):
-        id = db.Column(db.Integer, primary_key=True)
+        id = db.Column(db.Integer, primary_key=True, unique=True)
 
         title = db.Column(db.String(20), nullable=False)
         description = db.Column(db.String(20), nullable=False)
@@ -143,16 +153,6 @@ def create_app(test_config=None):
 
         def __repr__(self):
             return '<Design %r>' % self.title
-        
-    
-    login_manager = LoginManager()
-    login_manager.init_app(app)
-    login_manager.login_view = 'login'
-
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
    
     with app.app_context():
         db.create_all()
@@ -173,7 +173,7 @@ def create_app(test_config=None):
     
     @app.route('/user/<id>')
     def user(id):
-        user = db.one_or_404(db.select(User).filter_by(id=id))
-        return render_template("index.html", user = user)
+        user = db.one_or_404(db.select(User).filter_by(id=1))
+        return render_template("user.html", user = user)
     
     return app
