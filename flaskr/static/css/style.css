@@ -1,0 +1,159 @@
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f0f0f0;
+	margin: 0;
+	padding: 0;
+	display: flex;
+}
+
+.logo{
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+}
+
+.errors{
+    background-color: red;
+}
+
+.errors ul li{
+    list-style: none;
+    margin: 0 20px;
+}
+
+.profile-pic {
+	width: 100px;
+	height: 100px;
+}
+
+.container {
+	width: 80%;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+.entry {
+	margin: 0 250px;
+    /* Ширина колонок */
+    padding: 30px;
+}
+
+.nav {
+	float: left;
+	max-width: 200px;
+}
+
+header {
+	background-image: url('https://avatars.dzeninfra.ru/get-zen_doc/3769481/pub_5f720bf24fade30a2aeb0609_5f7210a4315c38725cccd009/scale_1200');
+	background-color: #333;
+	color: #fff;
+	padding: 10px 0;
+}
+
+header h1 {
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+
+nav ul {
+	list-style: none;
+	padding: 0;
+	text-align: center;
+}
+
+nav ul li {
+	display: inline;
+	margin: 0 15px;
+}
+
+nav ul li a {
+	color: #fff;
+	text-decoration: none;
+}
+
+main {
+	background-color: #fff;
+	padding: 20px;
+	border-radius: 5px;
+	margin-top: 20px;
+}
+
+.profile {
+	margin-bottom: 30px;
+}
+
+.profile-info {
+	display: flex;
+	align-items: center;
+}
+
+.profile-info img {
+	border-radius: 50%;
+	margin-right: 20px;
+}
+
+.details {
+	flex: 1;
+}
+
+.edit-button {
+	padding: 10px 20px;
+	background-color: #007BFF;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.edit-button:hover {
+	background-color: #0056b3;
+}
+
+.projects {
+	margin-top: 20px;
+}
+
+.project-list {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.project-item {
+	background-color: #e0e0e0;
+	padding: 20px;
+	border-radius: 5px;
+	margin: 10px;
+	flex: 1 1 calc(33.333% - 20px);
+	box-sizing: border-box;
+}
+
+.project-item h3 {
+	margin-top: 0;
+}
+
+.view-button {
+	display: inline-block;
+	margin-top: 10px;
+	padding: 10px 20px;
+	background-color: #28a745;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	text-decoration: none;
+	text-align: center;
+}
+
+.view-button:hover {
+	background-color: #218838;
+}
+
+footer {
+	background-color: #333;
+	color: #fff;
+	text-align: center;
+	padding: 10px 0;
+	margin-top: auto;
+	bottom: 0;
+	width: 100%;
+}

@@ -1,0 +1,33 @@
+{% extends "index.html" %}
+{% block content %}
+<main>
+	<div class="container">
+		<section class="profile">
+			<h2>Профиль пользователя</h2>
+			<div class="profile-info">
+				<img class="profile-pic"
+					src="https://yt3.googleusercontent.com/ytc/AIdro_maRWG3w3sxIuArJeInUL2sRNT4ggz4K23F3b-RF8Yoi2I=s900-c-k-c0x00ffffff-no-rj"
+					alt="Аватар пользователя">
+				<div class="details">
+					<p><strong>Имя:</strong> {{ current_user.first_name }}</p>
+					<p><strong>Фамилия:</strong> {{ current_user.last_name }}</p>
+					<p><strong>Телефон:</strong> {{ current_user.phone_number }}</p>
+					<button class="edit-button">Редактировать</button>
+				</div>
+			</div>
+		</section>
+		<section class="projects">
+			<h2>Мои проекты</h2>
+			<div class="project-list">
+				{% for order in orders %}
+					<div class="project-item">
+						<h3>Заказ дома id{{order.id}}</h3>
+						<img src={{order.image}} class="logo">
+						<a href="#" class="view-button">Просмотреть</a>
+					</div>
+				{% endfor %}
+			</div>
+		</section>
+	</div>
+</main>
+{% endblock %}

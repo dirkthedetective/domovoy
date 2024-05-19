@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 import urllib
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, IntegerField, DecimalField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 import pandas as pd
@@ -26,6 +26,7 @@ def create_app(test_config=None):
     app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pyodbc:///?odbc_connect=%s" % params
     app.config['SECRET KEY'] = 'dev'
 
+
     db = SQLAlchemy(app)
     bcrypt = Bcrypt(app)
 
@@ -37,16 +38,63 @@ def create_app(test_config=None):
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
+    
+        # Формы для регистрации ------------------------------------------------------
+    class RegisterForm(FlaskForm):
+        username = StringField(validators=[
+                            InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+
+        password = PasswordField(validators=[
+                            InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+                
+        first_name = StringField(validators=[
+            InputRequired()], render_kw={"placeholder": "First Name"})
+
+        last_name = StringField(render_kw={"placeholder": "Last Name"})
+        phone_number = IntegerField(render_kw={"placeholder": "Phone Number"})
+
+        submit = SubmitField('Register')
+
+        def validate_username(self, username):
+            existing_user_username = User.query.filter_by(
+                    username=username.data).first()
+            if existing_user_username:
+                raise ValidationError(
+                    'That username already exists. Please choose a different one.')
+                    
+    class LoginForm(FlaskForm):
+        username = StringField(validators=[
+                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+
+        password = PasswordField(validators=[
+                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+
+        submit = SubmitField('Login')
+
+    class DesignForm(FlaskForm):
+        id = StringField(render_kw={"placeholder": "ID"})
+
+        title = StringField(render_kw={"placeholder": "Название"})
+        description = StringField(render_kw={"placeholder": "Описание"})
+        price = IntegerField(render_kw={"placeholder": "Цена"})
+        floor_count = IntegerField(render_kw={"placeholder": "Этажи"})
+        area_size = DecimalField(render_kw={"placeholder": "Площадь"})
+        material = StringField(render_kw={"placeholder": "Материал"})
+
+        select = SelectField(choices=[("Insert", "Insert"), ("Update", "Update"), ("Delete", "Delete")], validators=[InputRequired()])
+
+        submit = SubmitField('Submit')
 
     class Blog_Entry(db.Model):
         id = db.Column(db.Integer, primary_key=True)
         author_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
 
+        title = db.Column(db.String(100), nullable=False)
         text = db.Column(db.Text, nullable=False)
 
         creation_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now())
 
-        image_link = db.Column(db.String(300))
+        image_link = db.Column(db.Text)
 
         role2 = db.relationship('User',
         backref=db.backref('blog_entry', lazy=True))
@@ -83,6 +131,8 @@ def create_app(test_config=None):
         #fk = db.ForeignKeyConstraint(
         #    ["document_id", "client_id"], ["document.id", "document.author.id"]
         #)
+        role = db.relationship("Design", 
+        backref=db.backref('design_document', lazy=True))
 
         def __repr__(self):
             return '<Design_Document %r>' % self.name
@@ -106,15 +156,15 @@ def create_app(test_config=None):
         id = db.Column(db.Integer, primary_key=True, unique=True)
         author_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
 
+        title = db.Column(db.String(100), nullable=False)
         creation_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now())
         document_type = db.Column(db.String(20))
-        document_link = db.Column(db.String(300))
+        document_link = db.Column(db.Text)
  
         role = db.relationship('Order_Document',        
         backref=db.backref('document', lazy=True))
         role2 = db.relationship('Design_Document',
         backref=db.backref('document', lazy=True))
-        
         role3 = db.relationship('User',
         backref=db.backref('document', lazy=True))
 
@@ -141,13 +191,15 @@ def create_app(test_config=None):
         id = db.Column(db.Integer, primary_key=True, unique=True)
 
         title = db.Column(db.String(20), nullable=False)
-        description = db.Column(db.String(20), nullable=False)
+        description = db.Column(db.Text, nullable=False)
         price = db.Column(db.Integer)
 
-        image_link = db.Column(db.String(300))
+        floor_count = db.Column(db.Integer)
+        area_size = db.Column(db.Float)
+        wall_material = db.Column(db.String(30))
 
-        role = db.relationship('Design_Document',
-        backref=db.backref('design', lazy=True))
+        image_link = db.Column(db.Text)
+
         role2 = db.relationship('Order',
         backref=db.backref('design', lazy=True))
 
@@ -169,11 +221,148 @@ def create_app(test_config=None):
 
     @app.route('/')
     def home():
-        return render_template("index.html")
+        designs = Design.query.all()
+        for design in designs:
+            design_path = os.path.join(app.static_folder, f'designs/{design.id}')
+            design.images = []  # Empty list to store image paths
+            if os.path.isdir(design_path):  # Check if directory exists
+                for filename in os.listdir(design_path):
+                    if os.path.isfile(os.path.join(design_path, filename)):  # Check if file
+                        design.images.append(url_for('static', filename=f'designs/{design.id}/{filename}'))
+        return render_template("home.html", designs=designs)
+    
+    @app.route('/blog')
+    def blog():
+        entries = Blog_Entry.query.all()
+        for entry in entries:
+            author = User.query.filter_by(id=entry.author_id).first()
+            entry.author = author.first_name + " " + author.last_name
+            design_path = os.path.join(app.static_folder, f'blog/{entry.id}')
+            entry.images = []  # Empty list to store image paths
+            if os.path.isdir(design_path):  # Check if directory exists
+                for filename in os.listdir(design_path):
+                    if os.path.isfile(os.path.join(design_path, filename)):  # Check if file
+                        entry.images.append(url_for('static', filename=f'blog/{entry.id}/{filename}'))
+        return render_template("blog.html", entries=entries)
     
     @app.route('/user/<id>')
     def user(id):
-        user = db.one_or_404(db.select(User).filter_by(id=1))
+        user = db.one_or_404(db.select(User).filter_by(id=id))
         return render_template("user.html", user = user)
+    
+    @app.route('/profile')
+    @login_required
+    def profile():
+        orders = Order.query.filter_by(client_id=current_user.id).all()
+        for order in orders:
+            design = Design.query.filter_by(id=order.design_id).first()
+            design_path = os.path.join(app.static_folder, f'designs/{design.id}')
+            order.image = url_for('static', filename=f'designs/{design.id}/' + os.listdir(design_path)[0])
+        return render_template("profile.html", orders=orders)
+    
+    @app.route('/catalogue')
+    @login_required
+    def catalogue():
+        designs = Design.query.all()
+        for design in designs:
+            design_path = os.path.join(app.static_folder, f'designs/{design.id}')
+            design.images = []  # Empty list to store image paths
+            if os.path.isdir(design_path):  # Check if directory exists
+                for filename in os.listdir(design_path):
+                    if os.path.isfile(os.path.join(design_path, filename)):  # Check if file
+                        design.images.append(url_for('static', filename=f'designs/{design.id}/{filename}'))
+        return render_template("designs.html", designs=designs)
+        
+    @app.route('/design/<id>')
+    def film(id):
+        design = db.one_or_404(db.select(Design).filter_by(id=id))
+        design_path = os.path.join(app.static_folder, f'designs/{design.id}')
+        design.images = []  # Empty list to store image paths
+        if os.path.isdir(design_path):  # Check if directory exists
+            for filename in os.listdir(design_path):
+                if os.path.isfile(os.path.join(design_path, filename)):  # Check if file
+                    design.images.append(url_for('static', filename=f'designs/{design.id}/{filename}'))
+        return render_template("design.html", design=design)
+
+    @app.route('/login', methods=['GET', 'POST'])
+    def login():
+        form = LoginForm()
+        if form.validate_on_submit():
+            user = User.query.filter_by(username=form.username.data).first()
+            if user:
+                if bcrypt.check_password_hash(user.password, form.password.data):
+                    login_user(user)
+                    return redirect(url_for('profile'))
+        return render_template('login.html', form=form)
+    
+    @app.route('/register', methods=['GET', 'POST'])
+    def register():
+        form = RegisterForm()
+
+        if form.validate_on_submit():
+            hashed_password = bcrypt.generate_password_hash(form.password.data)
+            new_user = User(username=form.username.data, password=hashed_password, first_name=form.first_name.data, last_name=form.last_name.data, phone_number=form.phone_number.data, account_type="Client")
+            db.session.add(new_user)
+            db.session.commit()
+            return redirect(url_for('login'))
+
+        return render_template('register.html', form=form)
+    
+    @app.route('/logout', methods=['GET', 'POST'])
+    @login_required
+    def logout():
+        logout_user()
+        return redirect(url_for('login'))
+    
+    @app.route('/admin/designs', methods=['GET', 'POST'])
+    @login_required
+    def adminfilms():
+        form = DesignForm()
+        if form.is_submitted():
+            if form.select.data == "Insert":
+                if form.title.data and form.description.data:
+                    me = Design(
+                        title=form.title.data, description=form.description.data, price=form.price.data, floor_count=form.floor_count.data, 
+                        area_size=form.area_size.data, wall_material=form.material.data)
+                    db.session.add(me)
+                    db.session.commit()
+                    flash('Успех!')
+                else:
+                    flash('Название и описание необходимы для добавления')
+            elif form.select.data == "Update":
+                if form.id.data:
+                    me = Design.query.filter_by(id=int(form.id.data)).first()
+                    if form.title.data:
+                        me.title = form.title.data
+                    if form.description.data:
+                        me.description = form.description.data
+                    if form.price.data:
+                        me.price=form.price.data
+                    if form.floor_count.data:
+                        me.floor_count=form.floor_count.data
+                    if form.area_size.data:
+                        me.area_size=form.area_size.data 
+                    if form.material.data:
+                        me.wall_material=form.material.data
+                    db.session.commit()
+                else:
+                    flash('ID is required for Update.')
+            elif form.select.data == "Delete":
+                if form.id.data:
+                        me = Design.query.filter_by(id=int(form.id.data)).first()
+                        if me != None:
+                            db.session.delete(me)
+                            db.session.commit()
+                        else:
+                            print("Error!")
+                            flash('Entry not found.')
+                else:
+                    flash('ID is required for Delete.')
+            else:
+                print("Error!")
+                flash('Wrong.')
+
+        table = Design.query.all()    
+        return render_template("admin/admin_designs.html", table=table, form=form)
     
     return app

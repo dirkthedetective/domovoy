@@ -3,10 +3,32 @@
     <head>
         <title> domOVOy </title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesd.css') }}">
         <link rel="shortcut icon" href="{{ url_for('static', filename='logo.ico') }}">
     </head>
+    <header>
+        <div class="container">
+            <h1>Личный кабинет</h1>
+            <nav>
+                <ul>
+                    <li><a href="/"><img src="{{ url_for('static', filename='domovoy.png') }}" class="logo"></a></li>
+                    <li><a href="/">Главная</a></li>
+                    <li><a href="/catalogue">Каталог</a></li>
+                    <li><a href="/blog">Блог</a></li>
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.account_type == 'Manager' %}
+                            <li><a href="/admin/designs">Редактировать</a></li>
+                        {% endif %}
+                        <li><a href="/profile">Личный Кабинет</a></li>
+                        <li><a href="/logout">Выйти</a></li>
+                    {% else %}
+                        <li><a href="/login">Войти</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
     <body>
-        <a><img src="{{ url_for('static', filename='domovoy.png') }}" class="logo"></a>
         <div class="content-bg">
             <div class="content">
                 <div class="errors">
@@ -21,10 +43,14 @@
                     {% endwith %}
                 </div>
                 <div class="cont">
-                    <div> Test application </div>
                     {% block content %}{% endblock %}
                 </div>
             </div>
         </div>
     </body>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Строительство частных домов. Все права защищены.</p>
+        </div>
+    </footer>
 </html>

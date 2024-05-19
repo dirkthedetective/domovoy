@@ -1,0 +1,18 @@
+{% extends "index.html" %}
+{% block content %}
+    <div class = adminpanel>
+        <h1>Register new account</h1>
+
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            {{ form.username }} <br>
+            {{ form.password }} <br>
+            {{ form.first_name }} <br>
+            {{ form.last_name }} <br>
+            {{ form.phone_number }} <br>
+            {{ form.submit }}
+        </form>
+    
+        <a href="/login">Войти в существующий аккаунт</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "index.html" %}
+{% block content %}
+<main>
+    <div class="container">
+        <section class="designs">
+            <h2>Наши дизайны</h2>
+            {% for design in designs %}
+            <div class="design-item">
+                <div class="image-slider">
+                    {% for image_path in design.images %}
+                        <img src="{{ image_path }}" alt="Дизайн" class="image">
+                    {% endfor %}
+                </div>
+                <div class="details">
+                    <h3><a href="/design/{{ design.id }}">{{ design.title }}</a></h3>
+                    <p>{{ design.description }}</p>
+                    <p>Цена: {{ design.price }} рублей</p>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+    </div>
+</main>
+<script>"{{ url_for('static', filename='scripts/slider.js') }}"</script>
+{% endblock %}
