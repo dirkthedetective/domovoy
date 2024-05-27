@@ -1,57 +1,57 @@
 {% extends "index.html" %}
 {% block content %}
 <main>
-    <div class="container">
-        <section class="welcome">
-            <h2>Добро пожаловать!</h2>
-            <p>Мы специализируемся на строительстве частных домов, предлагая комплексные решения от проектирования до
-                отделки.</p>
-        </section>
-        <br>
-        <section class="about">
-            <h2>О нас</h2>
-            <p>Наша компания имеет более 10 лет опыта в строительстве частных домов. Мы гарантируем высокое качество
-                работ и использование лучших материалов.</p>
-        </section>
-        <br>
-        <h2>Избранные проекты</h2>
-        <section class="project-list">
-            {% for design in designs %}
-                <div class="project-item">
-                    <img src="{{design.images[0]}}" class="logo">
-                    <h3><a href="/design/{{ design.id }}">{{ design.title }}</a></h3>
-                    <p>{{ design.description }}</p>
-                </div>
-            {% endfor %}
-        </section>
-        <section class="testimonials">
-            <h2>Отзывы клиентов</h2>
-            <div class="testimonial">
-                <p>«Отличная компания! Все работы выполнены в срок и на высоком уровне.»</p>
-                <p><strong>— Иван Иванов</strong></p>
-            </div>
-            <div class="testimonial">
-                <p>«Очень довольны результатом. Рекомендуем всем!»</p>
-                <p><strong>— Мария Петрова</strong></p>
-            </div>
-        </section>
-        <br>
-        <section class="advantages">
-            <h2>Наши преимущества</h2>
-            <ul>
-                <li>Опыт более 10 лет</li>
-                <li>Высококвалифицированные специалисты</li>
-                <li>Использование качественных материалов</li>
-                <li>Индивидуальный подход к каждому клиенту</li>
-            </ul>
-        </section>
-        <br>
-        <section class="contact">
-            <h2>Контакты</h2>
-            <p>Телефон: +7 (123) 456-78-90</p>
-            <p>Email: info@construction.com</p>
-            <p>Адрес: ул. Строителей, д. 10, г. Москва</p>
-        </section>
-    </div>
+	<div class="container">
+		<section class="welcome">
+			<h2>Добро пожаловать!</h2>
+			<p>Мы специализируемся на строительстве частных домов, предлагая комплексные решения от проектирования до
+				отделки.</p>
+		</section>
+		<br>
+		<section class="about">
+			<h2>О нас</h2>
+			<p>аша компания имеет более 10 лет опыта в строительстве частных домов. Мы гарантируем высокое качество
+				работ и использование лучших материалов.</p>
+		</section>
+		<br>
+		<h2>Избранные проекты</h2>
+		<section class="project-list">
+			{% for design in designs %}
+			<div class="project-item">
+				<img src="{{design.images[0]}}" class="logo">
+				<h3><a href="/design/{{ design.id }}">{{ design.title }}</a></h3>
+				<p>{{ design.description }}</p>
+			</div>
+			{% endfor %}
+		</section>
+		<section class="testimonials">
+			<h2>Отзывы клиентов</h2>
+			<div class="testimonial">
+				<p>«Отличная компания! Все работы выполнены в срок и на высоком уровне.»</p>
+				<p><strong>— Иван Иванов</strong></p>
+			</div>
+			<div class="testimonial">
+				<p>«Очень довольны результатом. Рекомендуем всем!»</p>
+				<p><strong>— Мария Петрова</strong></p>
+			</div>
+		</section>
+		<br>
+		<section class="advantages">
+			<h2>Наши преимущества</h2>
+			<ul>
+				<li>Опыт более 10 лет</li>
+				<li>Высококвалифицированные специалисты</li>
+				<li>Использование качественных материалов</li>
+				<li>Индивидуальный подход к каждому клиенту</li>
+			</ul>
+		</section>
+		<br>
+		<section class="contact">
+			<h2>Контакты</h2>
+			<p>Телефон: +7 (123) 456-78-90</p>
+			<p>Email: info@construction.com</p>
+			<p>Адрес: ул. Строителей, д. 10, г. Москва</p>
+		</section>
+	</div>
 </main>
 {% endblock %}
