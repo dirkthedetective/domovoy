@@ -1,31 +1,40 @@
 {% extends "index.html" %}
 {% block content %}
+<style>
+	.toBeReplaced span {
+		display: none;
+	}
+
+	.toBeReplaced:after {
+		content: "Блог";
+	}
+</style>
 <main>
-    <div class="container">
-        <section class="designs">
-            <h2>Блог</h2>
-            <br>
-            <div class="nav">
-                <h3>Навигация</h3>
-                {% for entry in entries %}
-                <a href="#entry{{entry.id}}">{{ entry.title }}</a><br>
-                {% endfor %}
-            </div>
-            <div class="entry">
-                {% for entry in entries %}
-                    <div id="entry{{entry.id}}"> 
-                        <h2>{{ entry.title }}</h2><br>
-                        <p>{{ entry.text }}</p>
-                        <div class="image-slider">
-                            {% for image_path in entry.images %}
-                                <img src="{{ image_path }}" alt="Фото" class="image">
-                            {% endfor %}
-                        </div>
-                        <p>Автор: {{ entry.author }} - {{ entry.creation_date }}</p>
-                    </div>
-                {% endfor %}
-            </div>
-        </section>
-    </div>
+	<div class="container">
+		<section class="designs">
+			<h2>Блог</h2>
+			<br>
+			<div class="nav">
+				<h3>Навигация</h3>
+				{% for entry in entries %}
+				<a href="#entry{{entry.id}}">{{ entry.title }}</a><br>
+				{% endfor %}
+			</div>
+			<div class="entry">
+				{% for entry in entries %}
+				<div id="entry{{entry.id}}">
+					<h2>{{ entry.title }}</h2><br>
+					<p>{{ entry.text }}</p>
+					<div class="image-slider">
+						{% for image_path in entry.images %}
+						<img src="{{ image_path }}" alt="Фото" class="image">
+						{% endfor %}
+					</div>
+					<p>Автор: {{ entry.author }} - {{ entry.creation_date }}</p>
+				</div>
+				{% endfor %}
+			</div>
+		</section>
+	</div>
 </main>
 {% endblock %}

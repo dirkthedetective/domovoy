@@ -1,48 +1,57 @@
 {% extends "index.html" %}
 {% block content %}
-    <div class = adminpanel>
-        <h1> Администрирование базы данных </h1>
-        <br>
-        <p> Films</p>
-        <table id="demo" border="1" cellpadding="7" cellspacing="0">
-            <tr bgcolor="#eeeeee">
-                <td>ID</td>
-                <td>Название</td>
-                <td>Описание</td>
-                <td>Цена</td>
-                <td>Этажи</td>
-                <td>Площадь</td>
-                <td>Материал</td>
-              </tr>
-            {% for u in table %}
-            <tr bgcolor="white">
-              <td>{{ u.id }}</td>
-              <td>{{ u.title }}</td>
-              <td>{{ u.description }}</td>
-              <td>{{ u.price }}</td>
-              <td>{{ u.floor_count }}</td>
-              <td>{{ u.area_size }}</td>
-              <td>{{ u.wall_material }}</td>
-            </tr>
-          {% endfor %}
-          </table>
+<style>
+	.toBeReplaced span {
+		display: none;
+	}
 
-          <br>
-          <p>Управление таблицей</p>
+	.toBeReplaced:after {
+		content: "Администрирование";
+	}
+</style>
+<div class=adminpanel>
+	<h1> Администрирование базы данных </h1>
+	<br>
+	<p> Films</p>
+	<table id="demo" border="1" cellpadding="7" cellspacing="0">
+		<tr bgcolor="#eeeeee">
+			<td>ID</td>
+			<td>Название</td>
+			<td>Описание</td>
+			<td>Цена</td>
+			<td>Этажи</td>
+			<td>Площадь</td>
+			<td>Материал</td>
+		</tr>
+		{% for u in table %}
+		<tr bgcolor="white">
+			<td>{{ u.id }}</td>
+			<td>{{ u.title }}</td>
+			<td>{{ u.description }}</td>
+			<td>{{ u.price }}</td>
+			<td>{{ u.floor_count }}</td>
+			<td>{{ u.area_size }}</td>
+			<td>{{ u.wall_material }}</td>
+		</tr>
+		{% endfor %}
+	</table>
 
-            <p>Вставка/Изменение/Удаление</p>
-            <form method="POST" action="{{ url_for('adminfilms') }}">
-                {{ form.hidden_tag() }}
-                {{ form.id }}
-                {{ form.title }}
-                {{ form.description }}
-                {{ form.price }}
-                {{ form.floor_count }}
-                {{ form.area_size }}
-                {{ form.material }}
-                {{ form.select }}
-                {{ form.submit }}
-            </form>
+	<br>
+	<p>Управление таблицей</p>
 
-    </div>
+	<p>Вставка/Изменение/Удаление</p>
+	<form method="POST" action="{{ url_for('adminfilms') }}">
+		{{ form.hidden_tag() }}
+		{{ form.id }}
+		{{ form.title }}
+		{{ form.description }}
+		{{ form.price }}
+		{{ form.floor_count }}
+		{{ form.area_size }}
+		{{ form.material }}
+		{{ form.select }}
+		{{ form.submit }}
+	</form>
+
+</div>
 {% endblock %}

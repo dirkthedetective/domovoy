@@ -1,3 +1,8 @@
+::-webkit-scrollbar {
+	width: 0;
+}
+
+
 body {
 	font-family: Arial, sans-serif;
 	background-color: #f0f0f0;
@@ -6,19 +11,39 @@ body {
 	display: flex;
 }
 
-.logo{
-    width: 100px;
-    height: 100px;
-    cursor: pointer;
+
+.logo {
+	width: 360px;
+	height: 300px;
+	cursor: pointer;
+	-webkit-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.24);
+	-moz-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.24);
+	box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.24);
 }
 
-.errors{
-    background-color: red;
+.logoind {
+	width: 100px;
+	width: 100px;
+	box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.24);
+  margin-bottom: -33px;
 }
 
-.errors ul li{
-    list-style: none;
-    margin: 0 20px;
+.errors {
+	background-color: red;
+}
+
+a {
+	width: 0;
+	height: 0;
+}
+
+.headnav {
+	margin-bottom: 20px;
+}
+
+.errors ul li {
+	list-style: none;
+	margin: 0 20px;
 }
 
 .profile-pic {
@@ -28,14 +53,14 @@ body {
 
 .container {
 	width: 80%;
-	margin: 0 auto;
 	padding: 20px;
+
 }
 
 .entry {
 	margin: 0 250px;
-    /* Ширина колонок */
-    padding: 30px;
+	/* Ширина колонок */
+	padding: 30px;
 }
 
 .nav {
@@ -44,7 +69,6 @@ body {
 }
 
 header {
-	background-image: url('https://avatars.dzeninfra.ru/get-zen_doc/3769481/pub_5f720bf24fade30a2aeb0609_5f7210a4315c38725cccd009/scale_1200');
 	background-color: #333;
 	color: #fff;
 	padding: 10px 0;
@@ -64,7 +88,10 @@ nav ul {
 
 nav ul li {
 	display: inline;
-	margin: 0 15px;
+	padding: 0 15px;
+	-webkit-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.24);
+	-moz-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.24);
+	box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.24);
 }
 
 nav ul li a {
@@ -73,7 +100,7 @@ nav ul li a {
 }
 
 main {
-	background-color: #fff;
+	background-color: #232323;
 	padding: 20px;
 	border-radius: 5px;
 	margin-top: 20px;
@@ -124,8 +151,12 @@ main {
 	padding: 20px;
 	border-radius: 5px;
 	margin: 10px;
-	flex: 1 1 calc(33.333% - 20px);
-	box-sizing: border-box;
+	height: 500px;
+	width: 400px;
+	background-color: #242424;
+	-webkit-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	-moz-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
 }
 
 .project-item h3 {
@@ -156,4 +187,182 @@ footer {
 	margin-top: auto;
 	bottom: 0;
 	width: 100%;
+}
+
+section {
+	margin-bottom: 50px;
+	margin-top: 25px;
+
+}
+
+.content-bg {
+	background-color: #121212;
+	padding: 20px;
+}
+
+main {
+	background-color: #232323
+}
+
+.nonestyle {
+	text-decoration: none;
+	color: #ffffff;
+}
+
+.calculation {
+	width: 500px;
+	height: 500px;
+	background-color: #242424;
+	-webkit-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	-moz-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	border-radius: 5px;
+}
+
+#calculationtitle {
+	font-size: 20px;
+	padding: 30px;
+	padding-bottom: 10px;
+}
+
+#descriptioncalc {
+	padding-top: 0;
+	padding-left: 20px;
+}
+
+.forminput {
+	margin-left: 10px;
+}
+
+.slider {
+	margin-top: 20px;
+	-webkit-appearance: none;
+	width: 60%;
+	height: 15px;
+	border-radius: 5px;
+	background: #141414;
+	outline: none;
+	opacity: 0.7;
+	-webkit-transition: .2s;
+	transition: opacity .2s;
+}
+
+.slider::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 15px;
+	height: 15px;
+	border-radius: 50%;
+	background: #fff024;
+	cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: #4CAF50;
+	cursor: pointer;
+}
+
+#demo {
+	margin-left: 5px;
+}
+
+#first {
+	margin: 25px;
+	margin-bottom: 12px;
+}
+
+#second {
+	margin: 25px;
+	margin-bottom: 12px;
+}
+
+#third {
+	margin: 25px;
+	margin-bottom: 12px;
+}
+
+.fill {
+	margin-top: 20px;
+	width: 25px;
+	height: 25px;
+	background: none;
+	border: 2px solid;
+	font: inherit;
+	line-height: 10px;
+	transition: 0.25s;
+	overflow: visible;
+	border-color: #fff024;
+	/* Цвет текста кнопки */
+	border-radius: 50%;
+	-webkit-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	-moz-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+}
+
+.fill.active {
+	background-color: #fff024;
+	/* Цвет фона кнопки при нажатии */
+}
+
+.fill:hover {
+	background-color: #fff024;
+	/* Цвет фона кнопки при наведении */
+}
+
+.fill2 {
+	margin-top: 20px;
+	width: 25px;
+	height: 25px;
+	background: none;
+	border: 2px solid;
+	font: inherit;
+	line-height: 10px;
+	transition: 0.25s;
+	overflow: visible;
+	border-color: #fff024;
+	/* Цвет текста кнопки */
+	border-radius: 50%;
+
+}
+
+.fill2.active {
+	background-color: #fff024;
+	/* Цвет фона кнопки при нажатии */
+}
+
+.fill2:hover {
+	background-color: #fff024;
+	/* Цвет фона кнопки при наведении */
+}
+
+
+.calculation {
+	position: relative;
+	text-align: center;
+}
+
+.calculation .submit {
+	position: absolute;
+	bottom: 20px;
+	/* Вы можете настроить это значение по вашему усмотрению */
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: #ffd700;
+	/* Желтый цвет */
+	color: #000;
+	/* Черный цвет текста */
+	border: none;
+	padding: 10px 20px;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 16px;
+	transition: background-color 0.3s;
+}
+
+.calculation .submit:hover {
+	background-color: #ffcc00;
+	/* Изменение цвета фона при наведении */
 }

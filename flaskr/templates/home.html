@@ -1,5 +1,14 @@
 {% extends "index.html" %}
 {% block content %}
+<style>
+	.toBeReplaced span {
+		display: none;
+	}
+
+	.toBeReplaced:after {
+		content: "Главная страница";
+	}
+</style>
 <main>
 	<div class="container">
 		<section class="welcome">
@@ -19,24 +28,69 @@
 			{% for design in designs %}
 			<div class="project-item">
 				<img src="{{design.images[0]}}" class="logo">
-				<h3><a href="/design/{{ design.id }}">{{ design.title }}</a></h3>
+				<h3><a class="nonestyle" href="/design/{{ design.id }}">{{ design.title }}</a></h3>
 				<p>{{ design.description }}</p>
 			</div>
 			{% endfor %}
 		</section>
-		<section class="testimonials">
-			<h2>Отзывы клиентов</h2>
-			<div class="testimonial">
-				<p>«Отличная компания! Все работы выполнены в срок и на высоком уровне.»</p>
-				<p><strong>— Иван Иванов</strong></p>
-			</div>
-			<div class="testimonial">
-				<p>«Очень довольны результатом. Рекомендуем всем!»</p>
-				<p><strong>— Мария Петрова</strong></p>
-			</div>
-		</section>
 		<br>
+		<section class="calculation">
+			<h1 id="calculationtitle">Калькулятор примерной стоимости дома</h1>
+			<div id="descriptioncalc">Выберите площадь, количество этажей, дизайн дома из предложенных и получите примерную
+				стоимость! </div>
+			<div class="forminput" id="first">
+				<div>1.Выберите площадь:<span id="demo"></span> м²</div>
+				<div class="slidecontainer">
+					<input type="range" min="60" max="250" value="50" class="slider" id="myRange1">
+				</div>
+			</div>
+			<div class="forminput" id="second">2.Выберите кол-во этажей:
+				<div>
+					<button class="fill">1</button>
+					<button class="fill">2</button>
+					<button class="fill">3</button>
+				</div>
+			</div>
+			<div class="forminput" id="third">3.Выберите номер дизайна:
+				<div>
+					<button class="fill2">1</button>
+					<button class="fill2">2</button>
+					<button class="fill2">3</button>
+				</div>
+			</div>
+			<script>
+				const buttons1 = document.querySelectorAll('#second .fill');
+				buttons1.forEach(button => {
+					button.addEventListener('click', () => {
+						buttons1.forEach(btn => {
+							btn.classList.remove('active');
+						});
+						button.classList.add('active');
+					});
+				});
+
+				const buttons2 = document.querySelectorAll('#third .fill2');
+				buttons2.forEach(button => {
+					button.addEventListener('click', () => {
+						buttons2.forEach(btn => {
+							btn.classList.remove('active');
+						});
+						button.classList.add('active');
+					});
+				});
+			</script>
+			<button class="submit">Посчитать</button>
+		</section>
 		<section class="advantages">
+			<script>
+				var slider = document.getElementById("myRange1");
+				var output = document.getElementById("demo");
+				output.innerHTML = slider.value;
+
+				slider.oninput = function () {
+					output.innerHTML = this.value;
+				}
+			</script>
 			<h2>Наши преимущества</h2>
 			<ul>
 				<li>Опыт более 10 лет</li>

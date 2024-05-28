@@ -1,5 +1,14 @@
 {% extends "index.html" %}
 {% block content %}
+<style>
+	.toBeReplaced span {
+		display: none;
+	}
+
+	.toBeReplaced:after {
+		content: "Вход";
+	}
+</style>
     <div class = adminpanel>
         <h1>Login</h1>
 

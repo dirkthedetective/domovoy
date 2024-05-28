@@ -1,5 +1,14 @@
 {% extends "index.html" %}
 {% block content %}
+<style>
+	.toBeReplaced span {
+		display: none;
+	}
+
+	.toBeReplaced:after {
+		content: "Каталог";
+	}
+</style>
     <div class = adminpanel>
         <h1>Register new account</h1>
 

@@ -1,5 +1,14 @@
 {% extends "index.html" %}
 {% block content %}
+<style>
+	.toBeReplaced span {
+		display: none;
+	}
+
+	.toBeReplaced:after {
+		content: "Личный кабинет";
+	}
+</style>
 <main>
 	<div class="container">
 		<section class="profile">
@@ -20,11 +29,11 @@
 			<h2>Мои проекты</h2>
 			<div class="project-list">
 				{% for order in orders %}
-					<div class="project-item">
-						<h3>Заказ дома id{{order.id}}</h3>
-						<img src={{order.image}} class="logo">
-						<a href="#" class="view-button">Просмотреть</a>
-					</div>
+				<div class="project-item">
+					<h3>Заказ дома id{{order.id}}</h3>
+					<img src={{order.image}} class="logo">
+					<a href="#" class="view-button">Просмотреть</a>
+				</div>
 				{% endfor %}
 			</div>
 		</section>
