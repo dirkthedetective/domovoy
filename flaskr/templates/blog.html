@@ -8,23 +8,37 @@
 	.toBeReplaced:after {
 		content: "Блог";
 	}
+	
 </style>
 <main>
 	<div class="container">
 		<section class="designs">
 			<h2>Блог</h2>
+			<style>
+				h2 {
+					color: yellow;
+				}
+			</style>
 			<br>
 			<div class="nav">
 				<h3>Навигация</h3>
 				{% for entry in entries %}
-				<a href="#entry{{entry.id}}">{{ entry.title }}</a><br>
+				<div class="navhref">
+					<a class="nonestyle" href="#entry{{entry.id}}">< {{ entry.title }}</a><br>
+				</div>
 				{% endfor %}
 			</div>
 			<div class="entry">
 				{% for entry in entries %}
-				<div id="entry{{entry.id}}">
+				<div class="blogpost" id="entry{{entry.id}}">
 					<h2>{{ entry.title }}</h2><br>
 					<p>{{ entry.text }}</p>
+					<style>
+						p {
+							padding: 10px;
+							padding-left: 0;
+						}
+					</style>
 					<div class="image-slider">
 						{% for image_path in entry.images %}
 						<img src="{{ image_path }}" alt="Фото" class="image">

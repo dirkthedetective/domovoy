@@ -28,14 +28,33 @@
 		<section class="project-list">
 			{% for design in designs %}
 			<div class="project-item">
-				<img src="{{design.images[0]}}" class="logo">
+				<div class="slider middle">
+					<div class="slides">
+						<input type="radio" name="r" id="r1" checked>
+						<input type="radio" name="r" id="r2">
+						<input type="radio" name="r" id="r3">
+						<input type="radio" name="r" id="r4">
+						{% for image_path in design.images %}
+						<div class="slide s1"><img src="{{design.images[0]}}" alt="" ></div>
+						<div class="slide"><img src="{{design.images[0]}}" alt="" ></div>
+						{% endfor %}
+					</div>
+					<div class="navigations">
+						<label for="r1" class="bar"></label>
+						<label for="r2" class="bar"></label>
+						<label for="r3" class="bar"></label>
+						<label for="r4" class="bar"></label>
+					</div>
+				</div>
 				<h3><a class="nonestyle" href="/design/{{ design.id }}">{{ design.title }}</a></h3>
 				<p>{{ design.description }}</p>
 			</div>
 			{% endfor %}
 		</section>
 
-		
+	
+
+
 
 
 		<br>
@@ -46,7 +65,7 @@
 			<div class="forminput" id="first">
 				<div>1.Выберите площадь:<span id="demo"></span> м²</div>
 				<div class="slidecontainer">
-					<input type="range" min="60" max="250" value="50" class="slider" id="myRange1">
+					<input type="range" min="60" max="250" value="50" class="slider1" id="myRange1">
 				</div>
 			</div>
 			<div class="forminput" id="second">2.Выберите кол-во этажей:
