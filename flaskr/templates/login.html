@@ -8,9 +8,35 @@
 	.toBeReplaced:after {
 		content: "Вход";
 	}
+
+	h1 {
+		color: yellow;
+		margin-bottom: 15px;
+	}
+	a {
+		color: yellow;
+	}
+
+	form {
+		padding: 10px;
+		margin-bottom: 5px;
+	}
+
+	input {
+		margin-bottom: 5px;
+		padding: 3px;
+		-webkit-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	-moz-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	border-radius: 5px;
+	}
+
+	#submit {
+		background-color: yellow;
+	}
 </style>
     <div class = adminpanel>
-        <h1>Login</h1>
+        <h1>Войти в аккаунт</h1>
 
         <form method="POST" action="">
             {{ form.hidden_tag() }}
