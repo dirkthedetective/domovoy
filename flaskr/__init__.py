@@ -9,6 +9,7 @@ from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 import pandas as pd
 import datetime
+import jsonpickle
 
 def create_app(test_config=None):
     
@@ -283,6 +284,17 @@ def create_app(test_config=None):
                 if os.path.isfile(os.path.join(design_path, filename)):  # Check if file
                     design.images.append(url_for('static', filename=f'designs/{design.id}/{filename}'))
         return render_template("design.html", design=design)
+    
+    @app.route('/api/design/<id>')
+    def design(id):
+        design = db.one_or_404(db.select(Design).filter_by(id=id))
+        design_path = os.path.join(app.static_folder, f'designs/{design.id}')
+        design.images = []  # Empty list to store image paths
+        if os.path.isdir(design_path):  # Check if directory exists
+            for filename in os.listdir(design_path):
+                if os.path.isfile(os.path.join(design_path, filename)):  # Check if file
+                    design.images.append(url_for('static', filename=f'designs/{design.id}/{filename}'))
+        return jsonpickle.encode(design)
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
