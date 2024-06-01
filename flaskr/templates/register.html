@@ -6,22 +6,45 @@
 	}
 
 	.toBeReplaced:after {
-		content: "Каталог";
+		content: "Создание нового аккаунта";
+	}
+	h1 {
+		color: yellow;
+		margin-bottom: 15px;
+	}
+	a {
+		color: yellow;
+	}
+
+	form {
+		padding: 10px;
+		margin-bottom: 5px;
+	}
+
+	input {
+		margin-bottom: 5px;
+		padding: 3px;
+	}
+
+	#submit {
+		background-color: yellow;
+		content: "Зарегистрироваться";
 	}
 </style>
-    <div class = adminpanel>
-        <h1>Register new account</h1>
+<div class=adminpanel>
+	<h1>Зарегистрируйтесь!</h1>
 
-        <form method="POST" action="">
-            {{ form.hidden_tag() }}
-            {{ form.username }} <br>
-            {{ form.password }} <br>
-            {{ form.first_name }} <br>
-            {{ form.last_name }} <br>
-            {{ form.phone_number }} <br>
-            {{ form.submit }}
-        </form>
-    
-        <a href="/login">Войти в существующий аккаунт</a>
-    </div>
+
+	<form method="POST" action="">
+		{{ form.hidden_tag() }}
+		{{ form.username }} <br>
+		{{ form.password }} <br>
+		{{ form.first_name }} <br>
+		{{ form.last_name }} <br>
+		{{ form.phone_number }} <br>
+		{{ form.submit }}
+	</form>
+
+	<a  href="/login">Войти в существующий аккаунт</a>
+</div>
 {% endblock %}
