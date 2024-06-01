@@ -22,7 +22,7 @@ def create_app(test_config=None):
     app.static_folder = 'static'
 
     # Создать базу данных SQL 
-    params = urllib.parse.quote_plus('DRIVER={ODBC Driver 17 for SQL Server};SERVER=DESKTOP-UF0F83M;DATABASE=DOMOVOYDB;Trusted_Connection=yes;')
+    params = urllib.parse.quote_plus('DRIVER={ODBC Driver 17 for SQL Server};SERVER=COMPUTER;DATABASE=DOMOVOYDB;Trusted_Connection=yes;')
     app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pyodbc:///?odbc_connect=%s" % params
     app.config['SECRET KEY'] = 'dev'
 
@@ -42,18 +42,18 @@ def create_app(test_config=None):
         # Формы для регистрации ------------------------------------------------------
     class RegisterForm(FlaskForm):
         username = StringField(validators=[
-                            InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+                            InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Имя пользователя"})
 
         password = PasswordField(validators=[
-                            InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+                            InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Пароль"})
                 
         first_name = StringField(validators=[
-            InputRequired()], render_kw={"placeholder": "First Name"})
+            InputRequired()], render_kw={"placeholder": "Имя"})
 
-        last_name = StringField(render_kw={"placeholder": "Last Name"})
-        phone_number = IntegerField(render_kw={"placeholder": "Phone Number"})
+        last_name = StringField(render_kw={"placeholder": "Фамилия"})
+        phone_number = IntegerField(render_kw={"placeholder": "Номер телефона"})
 
-        submit = SubmitField('Register')
+        submit = SubmitField('Зарегистрируйтесь')
 
         def validate_username(self, username):
             existing_user_username = User.query.filter_by(
@@ -64,12 +64,12 @@ def create_app(test_config=None):
                     
     class LoginForm(FlaskForm):
         username = StringField(validators=[
-                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Имя пользователя"})
 
         password = PasswordField(validators=[
-                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Пароль"})
 
-        submit = SubmitField('Login')
+        submit = SubmitField('Войти')
 
     class DesignForm(FlaskForm):
         id = StringField(render_kw={"placeholder": "ID"})
