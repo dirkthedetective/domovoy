@@ -27,10 +27,24 @@
 				<li><a href="/catalogue">Каталог</a></li>
 				<li><a href="/blog">Блог</a></li>
 				{% if current_user.is_authenticated %}
+
 				{% if current_user.account_type == 'Manager' %}
 				<li><a href="/admin/designs">Дизайны</a></li>
 				<li><a href="/admin/documents">Документы</a></li>
+				<li><a href="/admin/orders">Заказы</a></li>
 				{% endif %}
+
+				{% if current_user.account_type == 'Builder' %}
+				<li><a href="/admin/orders">Заказы</a></li>
+				{% endif %}
+
+				{% if current_user.account_type == 'Admin' %}
+				<li><a href="/admin/designs">Дизайны</a></li>
+				<li><a href="/admin/documents">Документы</a></li>
+				<li><a href="/admin/orders">Заказы</a></li>
+				<li><a href="/admin/users">Пользователи</a></li>
+				{% endif %}
+
 				<li><a href="/profile">Личный Кабинет</a></li>
 				<li><a href="/logout">Выйти</a></li>
 				{% else %}

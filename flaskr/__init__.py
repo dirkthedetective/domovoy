@@ -62,6 +62,31 @@ def create_app(test_config=None):
             if existing_user_username:
                 raise ValidationError(
                     'That username already exists. Please choose a different one.')
+            
+            # Формы для регистрации ------------------------------------------------------
+    class RegisterForm2(FlaskForm):
+        id = IntegerField(render_kw={"placeholder": "ID"})
+        username = StringField(validators=[Length(min=4, max=20)], render_kw={"placeholder": "Имя пользователя"})
+
+        password = PasswordField(validators=[Length(min=8, max=20)], render_kw={"placeholder": "Пароль"})
+                
+        first_name = StringField(validators=[], render_kw={"placeholder": "Имя"})
+
+        last_name = StringField(render_kw={"placeholder": "Фамилия"})
+        phone_number = IntegerField(render_kw={"placeholder": "Номер телефона"})
+
+        account_type = SelectField(choices=[("Manager", "Manager"), ("Client", "Client"), ("Builder", "Builder"), ("Admin", "Admin")])
+
+        select = SelectField(choices=[("Insert", "Insert"), ("Update", "Update"), ("Delete", "Delete")])
+
+        submit = SubmitField('Зарегистрируйтесь')
+
+        def validate_username(self, username):
+            existing_user_username = User.query.filter_by(
+                    username=username.data).first()
+            if existing_user_username:
+                raise ValidationError(
+                    'That username already exists. Please choose a different one.')
                     
     class LoginForm(FlaskForm):
         username = StringField(validators=[
@@ -291,10 +316,27 @@ def create_app(test_config=None):
 
             return redirect(url_for('upload_document'))
         
-        docs = Document.query.all() 
+        docs = Document.query.all()
+        for doc in docs:
+            user = User.query.filter_by(id=doc.author_id).first()
+            doc.authorname = user.first_name + " " + user.last_name
+            doc.designs  = (
+            db.session.query(Design)
+            .join(Design_Document, Design.id == Design_Document.design_id)
+            .filter(Design_Document.document_id == doc.id)
+            .all()
+            )
+            doc.orders  = (
+            db.session.query(Order)
+            .join(Order_Document, Order.id == Order_Document.order_id)
+            .filter(Order_Document.document_id == doc.id)
+            .all()
+            )
         orders = Order.query.all()
         for order in orders:
-            order.username = User.query.filter_by(id=order.client_id).first().username
+            user = User.query.filter_by(id=order.client_id).first()
+            order.username = user.first_name + " " + user.last_name
+            order.designname = Design.query.filter_by(id=order.design_id).first().title
         designs = Design.query.all() 
         return render_template('admin/documents.html', form=form, docs=docs, orders=orders, designs=designs)
     
@@ -355,21 +397,85 @@ def create_app(test_config=None):
             flash('Entry not found.')
         return jsonpickle.encode({'message': 'Document deleted successfully'})
     
-    @app.route('/api/design_document', methods=['POST'])
-    def link_design_doc():
+    @app.route('/api/design_document/<name>', methods=['DELETE'])
+    def delete_link(name):
+        me = db.one_or_404(db.select(Design_Document).filter_by(name=name))
+        if me != None:
+            db.session.delete(me)
+            db.session.commit()
+        else:
+            print("Error!")
+            flash('Entry not found.')
+        return jsonpickle.encode({'message': 'Document deleted successfully'})
+    
+    @app.route('/api/order_document/<name>', methods=['DELETE'])
+    def delete_link2(name):
+        me = db.one_or_404(db.select(Order_Document).filter_by(name=name))
+        if me != None:
+            db.session.delete(me)
+            db.session.commit()
+        else:
+            print("Error!")
+            flash('Entry not found.')
+        return jsonpickle.encode({'message': 'Document deleted successfully'})
+    
+    @app.route('/api/order', methods=['POST'])
+    def ordero():
+        # Access data from request.json
+        client_id = request.json.get('client_id')
+        design_id = request.json.get('design_id')
+
+        order = Order(
+            design_id=design_id,
+            client_id=client_id,
+            order_status="Подготовка"
+        )
+        db.session.add(order)
+        db.session.commit()
+
+        return jsonpickle.encode({'message': 'Data received successfully!'})
+    
+    @app.route('/api/status', methods=['POST'])
+    def status():
+        # Access data from request.json
+        order_status = request.json.get('order_status')
+        id = request.json.get('id')
+
+        order = db.one_or_404(db.select(Order).filter_by(id=id))
+        order.order_status = order_status
+        if order_status == "Завершен":
+            order.finish_date = datetime.datetime.now()
+        else:
+            order.finish_date = None
+        db.session.commit()
+
+        return jsonpickle.encode({'message': 'Data received successfully!'})
+    
+    
+    @app.route('/api/link_doc', methods=['POST'])
+    def link_doc():
         # Access data from request.json
         document_id = request.json.get('document_id')
         design_id = request.json.get('design_id')
         name = request.json.get('name')
+        type = request.json.get('type')
 
-        design_doc = Design_Document(
-            design_id=design_id,
-            document_id=document_id,
-            name=name
-        )
-
-        db.session.add(design_doc)
-        db.session.commit()
+        if type == 'design':
+            design_doc = Design_Document(
+                design_id=design_id,
+                document_id=document_id,
+                name=name
+            )
+            db.session.add(design_doc)
+            db.session.commit()
+        elif type == 'order':
+            design_doc = Order_Document(
+                order_id=design_id,
+                document_id=document_id,
+                name=name
+            )
+            db.session.add(design_doc)
+            db.session.commit()
 
         return jsonpickle.encode({'message': 'Data received successfully!'})
 
@@ -453,5 +559,67 @@ def create_app(test_config=None):
 
         table = Design.query.all()    
         return render_template("admin/designs.html", table=table, form=form)
+    
+    @app.route('/admin/users', methods=['GET', 'POST'])
+    @login_required
+    def adminusers():
+        form = RegisterForm2()
+        if form.is_submitted():
+            if form.select.data == "Insert":
+                if form.username.data and form.password.data and form.first_name.data:
+                    hashed_password = bcrypt.generate_password_hash(form.password.data)
+                    new_user = User(username=form.username.data, password=hashed_password, first_name=form.first_name.data,
+                                     last_name=form.last_name.data, phone_number=form.phone_number.data, account_type=form.account_type.data)
+                    db.session.add(new_user)
+                    db.session.commit()
+                else:
+                    flash('Имя, пароль и имя необходимы для добавления')
+            elif form.select.data == "Update":
+                if form.id.data:
+                    me = User.query.filter_by(id=int(form.id.data)).first()
+                    if form.username.data:
+                        me.username = form.username.data
+                    if form.password.data:
+                        me.password = bcrypt.generate_password_hash(form.password.data)
+                    if form.first_name.data:
+                        me.first_name=form.first_name.data
+                    if form.last_name.data:
+                        me.last_name=form.last_name.data
+                    if form.phone_number.data:
+                        me.phone_number=form.phone_number.data 
+                    if form.account_type.data:
+                        me.account_type=form.account_type.data
+                    db.session.commit()
+                else:
+                    flash('ID is required for Update.')
+            elif form.select.data == "Delete":
+                if form.id.data:
+                        me = User.query.filter_by(id=int(form.id.data)).first()
+                        if me != None:
+                            db.session.delete(me)
+                            db.session.commit()
+                        else:
+                            print("Error!")
+                            flash('Entry not found.')
+                else:
+                    flash('ID is required for Delete.')
+            else:
+                print("Error!")
+                flash('Wrong.')
+
+        table = User.query.all()    
+        return render_template("admin/users.html", table=table, form=form)
+    
+    @app.route('/admin/orders', methods=['GET', 'POST'])
+    @login_required
+    def adminorders():
+        table = Order.query.all()
+        for order in table:
+            user = User.query.filter_by(id=order.client_id).first()
+            order.username = user.username
+            order.designname = Design.query.filter_by(id=order.design_id).first().title
+        users = User.query.all()
+        designs = Design.query.all()
+        return render_template("admin/orders.html", table=table, users=users, designs=designs)
     
     return app

@@ -16,26 +16,26 @@
 <div class=adminpanel>
 	<h1> Администрирование базы данных </h1>
 	<br>
-	<p>Дизайны</p>
+	<p>Пользователи</p>
 	<table id="demo" border="1" cellpadding="7" cellspacing="0">
 		<tr bgcolor="#eeeeee">
 			<td>ID</td>
-			<td>Название</td>
-			<td>Описание</td>
-			<td>Цена</td>
-			<td>Этажи</td>
-			<td>Площадь</td>
-			<td>Материал</td>
+			<td>Имя пользователя</td>
+			<td>Пароль</td>
+			<td>Имя</td>
+			<td>Фамилия</td>
+			<td>Телефон</td>
+			<td>Тип аккаунта</td>
 		</tr>
 		{% for u in table %}
 		<tr bgcolor="white">
 			<td>{{ u.id }}</td>
-			<td>{{ u.title }}</td>
-			<td>{{ u.description }}</td>
-			<td>{{ u.price }}</td>
-			<td>{{ u.floor_count }}</td>
-			<td>{{ u.area_size }}</td>
-			<td>{{ u.wall_material }}</td>
+			<td>{{ u.username }}</td>
+			<td>{{ u.password }}</td>
+			<td>{{ u.first_name }}</td>
+			<td>{{ u.last_name }}</td>
+			<td>{{ u.phone_number }}</td>
+			<td>{{ u.account_type }}</td>
 		</tr>
 		{% endfor %}
 	</table>
@@ -44,15 +44,15 @@
 	<p>Управление таблицей</p>
 
 	<p>Вставка/Изменение/Удаление</p>
-	<form method="POST" action="{{ url_for('adminfilms') }}">
+	<form method="POST" action="{{ url_for('adminusers') }}">
 		{{ form.hidden_tag() }}
 		{{ form.id }}
-		{{ form.title }}
-		{{ form.description }}
-		{{ form.price }}
-		{{ form.floor_count }}
-		{{ form.area_size }}
-		{{ form.material }}
+		{{ form.username }}
+		{{ form.password }}
+		{{ form.first_name }}
+		{{ form.last_name }}
+		{{ form.phone_number }}
+		{{ form.account_type }}
 		{{ form.select }}
 		{{ form.submit }}
 	</form>

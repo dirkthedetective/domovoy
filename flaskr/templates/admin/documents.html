@@ -62,13 +62,25 @@
     <tr bgcolor="white">
       <td>{{ u.id }}</td>
       <td>{{ u.title }}</td>
-      <td>{{ u.author_id }}</td>
+      <td>{{ u.authorname }}</td>
       <td>{{ u.creation_date }}</td>
       <td>{{ u.document_type }}</td>
       {% set filename = "documents/" + u.document_link %}
       <td><a href="{{ url_for('static', filename=filename) }}" class="btn btn-primary">View Document</a></td>
       <td><button class="delete" name="{{u.id}}">&times</button></td>
     </tr>
+    {% for design in u.designs %}
+    <tr>
+        <td colspan=6>Связан с дизайном {{design.title}}</td>
+        <td><button class="delete_design_link" name="Связка{{u.id}}_{{design.id}}">&times</button></td>
+    </tr>
+    {% endfor %}
+    {% for design in u.orders %}
+    <tr>
+        <td colspan=6>Связан с заказом {{design.id}}</td>
+        <td><button class="delete_order_link" name="Связка{{u.id}}_{{design.id}}">&times</button></td>
+    </tr>
+    {% endfor %}
     {% endfor %}
   </table>
 </div>
@@ -84,7 +96,10 @@
   <select id="designos">
     <option value="first" selected> </option>
     {% for design in designs %}
-    <option value="{{design.id}}">{{design.title}}</option>
+    <option value="{{design.id}}" name="design">{{design.title}}</option>
+    {% endfor %}
+    {% for order in orders %}
+    <option value="{{order.id}}" name="order">Заказ {{order.id}} на {{order.designname}} от {{order.username}}</option>
     {% endfor %}
   </select>
   <button id="link">Связать</button>
