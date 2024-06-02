@@ -23,7 +23,7 @@ def create_app(test_config=None):
     app.static_folder = 'static'
 
     # Создать базу данных SQL 
-    params = urllib.parse.quote_plus('DRIVER={ODBC Driver 17 for SQL Server};SERVER=DESKTOP-UF0F83M;DATABASE=DOMOVOYDB;Trusted_Connection=yes;')
+    params = urllib.parse.quote_plus('DRIVER={ODBC Driver 17 for SQL Server};SERVER=COMPUTER;DATABASE=DOMOVOYDB;Trusted_Connection=yes;')
     app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pyodbc:///?odbc_connect=%s" % params
     app.config['SECRET KEY'] = 'dev'
 

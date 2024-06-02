@@ -257,6 +257,17 @@ main {
 
 #demo {
 	margin-left: 5px;
+	margin: 10px;
+	border-radius: 10px;
+}
+
+.demo {
+	-webkit-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	-moz-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	border-radius: 10px;
+	background-color: #333;
+	color: #ffffff;
 }
 
 #first {
@@ -493,6 +504,7 @@ input[name="r"] {
 	top: 50%;
 	transform: translate(-50%, -50%) scale(0);
 	z-index: 10;
+	height: 300px;
 }
 
 .modal.active {
@@ -514,4 +526,20 @@ input[name="r"] {
 #overlay.active {
 	opacity: 1;
 	pointer-events: all;
+}
+
+#modal-info {
+margin-left: 30px;
+}
+
+#total-sum {
+	margin-left: 30px;
+	margin-top: 10px;
+	-webkit-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	-moz-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	border-radius: 5px;
+	padding: 10px;
+	width: 450px;
+	color: #fffb00;
 }
