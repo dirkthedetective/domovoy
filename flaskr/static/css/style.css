@@ -216,6 +216,7 @@ section {
 }
 
 .content-bg {
+	min-height: 100vh;
 	background-color: #121212;
 	padding: 20px;
 }
@@ -399,6 +400,10 @@ main {
 .middle {
 	transform: translate(-0%, -0%);
 	
+}
+
+.navbar {
+	display: flex;
 }
 
 .navigations {

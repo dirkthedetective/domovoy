@@ -66,7 +66,7 @@
       <td>{{ u.creation_date }}</td>
       <td>{{ u.document_type }}</td>
       {% set filename = "documents/" + u.document_link %}
-      <td><a href="{{ url_for('static', filename=filename) }}" class="btn btn-primary">View Document</a></td>
+      <td><a href="{{ url_for('static', filename=filename) }}" class="btn btn-primary">Просмотр</a></td>
       <td><button class="delete" name="{{u.id}}">&times</button></td>
     </tr>
     {% for design in u.designs %}

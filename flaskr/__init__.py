@@ -348,6 +348,13 @@ def create_app(test_config=None):
             design = Design.query.filter_by(id=order.design_id).first()
             design_path = os.path.join(app.static_folder, f'designs/{design.id}')
             order.image = url_for('static', filename=f'designs/{design.id}/' + os.listdir(design_path)[0])
+            order.design = Design.query.filter_by(id=order.design.id).first()
+            order.docs  = (
+            db.session.query(Document)
+            .join(Order_Document, Document.id == Order_Document.order_id)
+            .filter(Order_Document.order_id == order.id)
+            .all()
+            )
         return render_template("profile.html", orders=orders)
     
     @app.route('/catalogue')

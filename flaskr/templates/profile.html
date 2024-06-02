@@ -35,7 +35,6 @@
 					<p><strong>Имя:</strong> {{ current_user.first_name }}</p>
 					<p><strong>Фамилия:</strong> {{ current_user.last_name }}</p>
 					<p><strong>Телефон:</strong> {{ current_user.phone_number }}</p>
-					<button class="edit-button">Редактировать</button>
 				</div>
 			</div>
 		</section>
@@ -46,11 +45,39 @@
 				<div class="project-item">
 					<h3>Заказ дома id{{order.id}}</h3>
 					<img src={{order.image}} class="logo">
-					<a href="#" class="view-button">Просмотреть</a>
+					<button data-modal-target="#modal{{order.id}}" class="view-button" id="{{order.id}}">Просмотреть</button>
+				</div>
+				<div class="modal" id="modal{{order.id}}">
+					<div class="modal-header">
+						<h1 id="calculationtitle">Проект {{order.id}}</h1>
+					</div>
+					<br>
+					<div class="modal-body" id="modal-body">
+						<div id="modal-info"></div>
+						<br>
+						<h1>Заказ дизайна <a href="/design/{{order.design.id}}">{{order.design.title}}</a></h1>
+						<p>{{order.design.description}}</p>
+						<br>
+						<h1>Документы</h1>
+						<br>
+						<ul class="navbar">
+						{% for doc in order.docs %}
+						<br>
+						<li>{{doc.title}}</li>
+						<li>{{doc.type}}</li>
+						{% set filename = "documents/" + doc.document_link %}
+						<li><a href="{{ url_for('static', filename=filename) }}" class="btn btn-primary">  Просмотр</a></li>
+						{% endfor %}
+						</ul>
+						<br>
+					</div>
 				</div>
 				{% endfor %}
 			</div>
 		</section>
 	</div>
+	<div id="overlay"></div>
 </main>
+
+<script src="{{ url_for('static', filename='scripts/profile.js') }}"></script>
 {% endblock %}
