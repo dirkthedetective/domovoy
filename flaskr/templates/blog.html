@@ -8,7 +8,6 @@
 	.toBeReplaced:after {
 		content: "Блог";
 	}
-	
 </style>
 <main>
 	<div class="container">
@@ -19,12 +18,19 @@
 					color: yellow;
 				}
 			</style>
+			<p>Новая запись</p>
+			<form method="POST" action="{{ url_for('blog') }}">
+				{{ form.hidden_tag() }}
+				{{ form.title }}
+				{{ form.text }}
+				{{ form.submit }}
+			</form>
 			<br>
 			<div class="nav">
 				<h3>Навигация</h3>
 				{% for entry in entries %}
 				<div class="navhref">
-					<a class="nonestyle" href="#entry{{entry.id}}">< {{ entry.title }}</a><br>
+					<a class="nonestyle" href="#entry{{entry.id}}">{{ entry.title }}</a><br>
 				</div>
 				{% endfor %}
 			</div>

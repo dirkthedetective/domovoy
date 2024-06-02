@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 import urllib
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, IntegerField, DecimalField, FileField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, IntegerField, DecimalField, FileField, TextAreaField
 from wtforms.validators import InputRequired, Length, ValidationError, DataRequired
 from flask_bcrypt import Bcrypt
 import pandas as pd
@@ -23,7 +23,7 @@ def create_app(test_config=None):
     app.static_folder = 'static'
 
     # Создать базу данных SQL 
-    params = urllib.parse.quote_plus('DRIVER={ODBC Driver 17 for SQL Server};SERVER=COMPUTER;DATABASE=DOMOVOYDB;Trusted_Connection=yes;')
+    params = urllib.parse.quote_plus('DRIVER={ODBC Driver 17 for SQL Server};SERVER=DESKTOP-UF0F83M;DATABASE=DOMOVOYDB;Trusted_Connection=yes;')
     app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pyodbc:///?odbc_connect=%s" % params
     app.config['SECRET KEY'] = 'dev'
 
@@ -111,10 +111,16 @@ def create_app(test_config=None):
 
         submit = SubmitField('Принять')
 
+    class BlogForm(FlaskForm):
+        title = StringField(render_kw={"placeholder": "Название"})
+        text = TextAreaField(render_kw={"placeholder": "Текст"})
+
+        submit = SubmitField('Принять')
+
     class DocumentUploadForm(FlaskForm):
-        title = StringField('Title', validators=[DataRequired()])
-        document_type = StringField('Document Type (optional)')
-        file = FileField('Upload Document', validators=[DataRequired()])
+        title = StringField('Название', validators=[DataRequired()])
+        document_type = StringField('Тип документа')
+        file = FileField('Файл документа', validators=[DataRequired()])
         submit = SubmitField('Загрузить')
 
     class Blog_Entry(db.Model):
@@ -264,7 +270,7 @@ def create_app(test_config=None):
                         design.images.append(url_for('static', filename=f'designs/{design.id}/{filename}'))
         return render_template("home.html", designs=designs)
     
-    @app.route('/blog')
+    @app.route('/blog', methods=['GET', 'POST'])
     def blog():
         entries = Blog_Entry.query.all()
         for entry in entries:
@@ -276,7 +282,17 @@ def create_app(test_config=None):
                 for filename in os.listdir(design_path):
                     if os.path.isfile(os.path.join(design_path, filename)):  # Check if file
                         entry.images.append(url_for('static', filename=f'blog/{entry.id}/{filename}'))
-        return render_template("blog.html", entries=entries)
+
+        form = BlogForm()
+        if form.validate_on_submit():
+            entry = Blog_Entry(
+                title=form.title.data,
+                text=form.text.data,
+                author_id=current_user.id
+            )
+            db.session.add(entry)
+            db.session.commit()
+        return render_template("blog.html", entries=entries, form=form)
     
     @app.route('/user/<id>')
     def user(id):
