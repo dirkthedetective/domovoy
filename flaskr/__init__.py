@@ -107,15 +107,15 @@ def create_app(test_config=None):
         area_size = DecimalField(render_kw={"placeholder": "Площадь"})
         material = StringField(render_kw={"placeholder": "Материал"})
 
-        select = SelectField(choices=[("Insert", "Insert"), ("Update", "Update"), ("Delete", "Delete")], validators=[InputRequired()])
+        select = SelectField(choices=[("Insert", "Добавить"), ("Update", "Изменить"), ("Delete", "Удалить")], validators=[InputRequired()])
 
-        submit = SubmitField('Submit')
+        submit = SubmitField('Принять')
 
     class DocumentUploadForm(FlaskForm):
         title = StringField('Title', validators=[DataRequired()])
         document_type = StringField('Document Type (optional)')
         file = FileField('Upload Document', validators=[DataRequired()])
-        submit = SubmitField('Upload')
+        submit = SubmitField('Загрузить')
 
     class Blog_Entry(db.Model):
         id = db.Column(db.Integer, primary_key=True, autoincrement=True)

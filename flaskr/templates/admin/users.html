@@ -12,13 +12,38 @@
 	.adminpanel h1,p {
 		color: yellow;
 	}
+
+	input, select {
+		-webkit-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	-moz-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	background-color: #333;
+	color: #ffffff;
+	margin-top: 20px;
+	padding: 3px;
+	margin-right: 5px;
+	}
+	.content-bg {
+min-height: 90%;
+	}
+
+	td {
+		color: #ffffff;
+	}
+
+	#submit{
+		color: #000000;
+		background-color: #ffe600;
+		font-weight: 550;
+		padding: 5px;
+	}
 </style>
 <div class=adminpanel>
 	<h1> Администрирование базы данных </h1>
 	<br>
 	<p>Пользователи</p>
 	<table id="demo" border="1" cellpadding="7" cellspacing="0">
-		<tr bgcolor="#eeeeee">
+		<tr bgcolor="#333">
 			<td>ID</td>
 			<td>Имя пользователя</td>
 			<td>Пароль</td>
@@ -28,7 +53,7 @@
 			<td>Тип аккаунта</td>
 		</tr>
 		{% for u in table %}
-		<tr bgcolor="white">
+		<tr bgcolor="#333">
 			<td>{{ u.id }}</td>
 			<td>{{ u.username }}</td>
 			<td>{{ u.password }}</td>

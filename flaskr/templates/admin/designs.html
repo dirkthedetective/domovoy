@@ -12,15 +12,33 @@
 	.adminpanel h1,
 	p {
 		color: yellow;
+		
+	}
+	td {
+		color: #ffffff;
 	}
 
-	input {
+	input, select {
 		-webkit-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
 	-moz-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
 	box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
-	border-radius: 10px;
 	background-color: #333;
 	color: #ffffff;
+	margin-top: 20px;
+	padding: 3px;
+	border-radius: 5%;
+	margin-right: 5px;
+	}
+
+	#submit{
+		color: #000000;
+		background-color: #ffe600;
+		font-weight: 550;
+		padding: 5px;
+	}
+
+	.content-bg {
+min-height: 90%;
 	}
 </style>
 <div class=adminpanel>
@@ -38,7 +56,7 @@
 			<td>Материал</td>
 		</tr>
 		{% for u in table %}
-		<tr bgcolor="white">
+		<tr bgcolor="#333">
 			<td>{{ u.id }}</td>
 			<td>{{ u.title }}</td>
 			<td>{{ u.description }}</td>

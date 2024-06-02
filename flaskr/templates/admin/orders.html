@@ -9,8 +9,42 @@
 		content: "Администрирование";
 	}
 
-	.adminpanel h1,p {
+	.adminpanel h1,
+	p {
 		color: yellow;
+	}
+
+	input,
+	select {
+		-webkit-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+		-moz-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+		box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+
+
+		margin-top: 20px;
+		padding: 3px;
+		margin-right: 5px;
+	}
+
+	.content-bg {
+		min-height: 90%;
+	}
+
+	td {
+		color: #ffffff;
+	}
+
+	#submit {
+		color: #000000;
+		background-color: #ffe600;
+		font-weight: 550;
+		padding: 5px;
+	}
+
+	#link {
+		background-color: #ffee00;
+		padding: 5px;
+		font-weight: 550;
 	}
 </style>
 <div class=adminpanel>
@@ -18,62 +52,62 @@
 	<br>
 	<p> Заказы</p>
 	<table id="demo" border="1" cellpadding="7" cellspacing="0">
-		<tr bgcolor="#eeeeee">
+		<tr bgcolor="#333">
 			<td>ID</td>
 			<td>Клиент</td>
 			<td>Дизайн</td>
 			<td>Дата начала</td>
 			<td>Дата окончания</td>
 			<td>Статус</td>
-            {% if current_user.account_type == 'Builder' %}
-            <td></td>
-            <td>Подготовка</td>
-            <td>Cтроительство</td>
-            <td>Сдача</td>
-            <td>Завершен</td>
-            <td>Отменен</td>
-            {% endif %}
+			{% if current_user.account_type == 'Builder' %}
+			<td></td>
+			<td>Подготовка</td>
+			<td>Cтроительство</td>
+			<td>Сдача</td>
+			<td>Завершен</td>
+			<td>Отменен</td>
+			{% endif %}
 		</tr>
 		{% for u in table %}
-		<tr bgcolor="white">
+		<tr bgcolor="#333">
 			<td>{{ u.id }}</td>
 			<td>{{ u.username }}</td>
 			<td>{{ u.designname }}</td>
 			<td>{{ u.creation_date }}</td>
 			<td>{{ u.finish_date }}</td>
 			<td>{{ u.order_status }}</td>
-            {% if current_user.account_type == 'Builder' %}
-            <td></td>
-            <td><input type="radio" value="Подготовка" class="status" name="{{u.id}}"></td>
-            <td><input type="radio" value="Cтроительство" class="status" name="{{u.id}}"></td>
-            <td><input type="radio" value="Сдача" class="status" name="{{u.id}}"></td>
-            <td><input type="radio" value="Завершен" class="status" name="{{u.id}}"></td>
-            <td><input type="radio" value="Отменен" class="status" name="{{u.id}}"></td>
-            {% endif %}
+			{% if current_user.account_type == 'Builder' %}
+			<td></td>
+			<td><input type="radio" value="Подготовка" class="status" name="{{u.id}}"></td>
+			<td><input type="radio" value="Cтроительство" class="status" name="{{u.id}}"></td>
+			<td><input type="radio" value="Сдача" class="status" name="{{u.id}}"></td>
+			<td><input type="radio" value="Завершен" class="status" name="{{u.id}}"></td>
+			<td><input type="radio" value="Отменен" class="status" name="{{u.id}}"></td>
+			{% endif %}
 		</tr>
 		{% endfor %}
 	</table>
 
-    {% if current_user.account_type == 'Manager' %}
-    <br>
+	{% if current_user.account_type == 'Manager' %}
+	<br>
 	<p>Управление таблицей</p>
 
 	<p>Вставка/Изменение/Удаление</p>
 	<select id="useros">
-        <option value="first" selected> </option>
-        {% for user in users %}
-        <option value="{{user.id}}">{{user.username}}</option>
-        {% endfor %}
-    </select>
-    <select id="designos">
-        <option value="first" selected> </option>
-        {% for design in designs %}
-        <option value="{{design.id}}">{{design.title}}</option>
-        {% endfor %}
-    </select>
-    <button id="link">Оформить</button>
-    <br>
-    {% endif %}
+		<option value="first" selected> </option>
+		{% for user in users %}
+		<option value="{{user.id}}">{{user.username}}</option>
+		{% endfor %}
+	</select>
+	<select id="designos">
+		<option value="first" selected> </option>
+		{% for design in designs %}
+		<option value="{{design.id}}">{{design.title}}</option>
+		{% endfor %}
+	</select>
+	<button id="link">Оформить</button>
+	<br>
+	{% endif %}
 </div>
 <script src="{{ url_for('static', filename='scripts/orderos.js') }}"></script>
 {% endblock %}

@@ -13,6 +13,52 @@
   p {
     color: yellow;
   }
+
+
+	input, select {
+		-webkit-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	-moz-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.62);
+	background-color: #333;
+	color: #ffffff;
+	margin-top: 20px;
+	padding: 3px;
+	margin-right: 5px;
+	}
+	.content-bg {
+min-height: 90%;
+	}
+
+	td {
+		color: #ffffff;
+		background-color: #333;
+	}
+
+	#link {
+		background-color: #ffee00;
+		padding: 5px;
+		font-weight: 550;
+	}
+
+	#submit{
+		background-color: #ffee00;
+		color: black;
+		font-weight: 550;
+	}
+
+	.delete {
+		width: 50px;
+		height: 30px;
+		font-weight: bold;
+		background-color: #ffee00;
+	}
+
+	.delete_design_link, .delete_order_link {
+		width: 50px;
+		height: 30px;
+		font-weight: bold;
+		background-color: #ffee00;
+	}
 </style>
 <div class="adminpanel">
   <h1>Загрузить документ</h1>
@@ -49,7 +95,7 @@
   <br>
   <p>Документы</p>
   <table id="demo" border="1" cellpadding="7" cellspacing="1">
-    <tr bgcolor="#eeeeee">
+    <tr bgcolor="#333">
       <td>ID</td>
       <td>Название</td>
       <td>Автор</td>
@@ -59,7 +105,7 @@
       <td>Удалить</td>
     </tr>
     {% for u in docs %}
-    <tr bgcolor="white">
+    <tr bgcolor="#333">
       <td>{{ u.id }}</td>
       <td>{{ u.title }}</td>
       <td>{{ u.authorname }}</td>
