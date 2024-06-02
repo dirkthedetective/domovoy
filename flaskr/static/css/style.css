@@ -57,6 +57,14 @@ a {
 
 }
 
+table {
+    border-collapse: collapse; /* Remove default table border spacing */
+}
+
+td, th {
+    padding: 10px; /* Adjust padding as needed */
+}
+
 .entry {
 	margin: 0 250px;
 	/* Ширина колонок */
@@ -436,19 +444,20 @@ input[name="r"] {
 	height: 100%;
 }
 
-#r1:checked ~ .s1 {
+.r1.checked ~ .s0 {
 	margin-left: 0;
 }
 
-#r2:checked ~ .s1 {
+.r2.checked ~ .s0 {
 	margin-left: -25%;
+	transform: translateX(-50%);
 }
 
-#r3:checked ~ .s1 {
+.r3.checked ~ .s0 {
 	margin-left: -50%;
 }
 
-#r4:checked ~.s1 {
+.r4.checked ~ .s0 {
 	margin-left: -75%;
 }
 

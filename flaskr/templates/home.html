@@ -30,20 +30,15 @@
 			<div class="project-item">
 				<div class="slider middle">
 					<div class="slides">
-						<input type="radio" name="r" id="r1" checked>
-						<input type="radio" name="r" id="r2">
-						<input type="radio" name="r" id="r3">
-						<input type="radio" name="r" id="r4">
 						{% for image_path in design.images %}
-						<div class="slide s1"><img src="{{design.images[0]}}" alt="" ></div>
-						<div class="slide"><img src="{{design.images[0]}}" alt="" ></div>
+						<input type="radio" name="r" id="r{{ design.id }}{{ design.images.index(image_path) }}" class="r{{ design.images.index(image_path) }}">
+						<div class="slide s{{ design.images.index(image_path) }}"><img src="{{ image_path }}" alt="" ></div>
 						{% endfor %}
 					</div>
 					<div class="navigations">
-						<label for="r1" class="bar"></label>
-						<label for="r2" class="bar"></label>
-						<label for="r3" class="bar"></label>
-						<label for="r4" class="bar"></label>
+						{% for image_path in design.images %}
+						<label for="r{{ design.id }}{{ design.images.index(image_path) }}" class="bar"></label>
+						{% endfor %}
 					</div>
 				</div>
 				<h3><a class="nonestyle" href="/design/{{ design.id }}">{{ design.title }}</a></h3>

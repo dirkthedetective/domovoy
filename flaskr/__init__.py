@@ -1,11 +1,11 @@
 import os
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 import urllib
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, IntegerField, DecimalField
-from wtforms.validators import InputRequired, Length, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, SelectField, IntegerField, DecimalField, FileField
+from wtforms.validators import InputRequired, Length, ValidationError, DataRequired
 from flask_bcrypt import Bcrypt
 import pandas as pd
 import datetime
@@ -23,7 +23,7 @@ def create_app(test_config=None):
     app.static_folder = 'static'
 
     # Создать базу данных SQL 
-    params = urllib.parse.quote_plus('DRIVER={ODBC Driver 17 for SQL Server};SERVER=COMPUTER;DATABASE=DOMOVOYDB;Trusted_Connection=yes;')
+    params = urllib.parse.quote_plus('DRIVER={ODBC Driver 17 for SQL Server};SERVER=DESKTOP-UF0F83M;DATABASE=DOMOVOYDB;Trusted_Connection=yes;')
     app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pyodbc:///?odbc_connect=%s" % params
     app.config['SECRET KEY'] = 'dev'
 
@@ -86,8 +86,14 @@ def create_app(test_config=None):
 
         submit = SubmitField('Submit')
 
+    class DocumentUploadForm(FlaskForm):
+        title = StringField('Title', validators=[DataRequired()])
+        document_type = StringField('Document Type (optional)')
+        file = FileField('Upload Document', validators=[DataRequired()])
+        submit = SubmitField('Upload')
+
     class Blog_Entry(db.Model):
-        id = db.Column(db.Integer, primary_key=True)
+        id = db.Column(db.Integer, primary_key=True, autoincrement=True)
         author_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
 
         title = db.Column(db.String(100), nullable=False)
@@ -120,6 +126,9 @@ def create_app(test_config=None):
 
         role = db.relationship("Order", 
         backref=db.backref('order_document', lazy=True))
+         
+        role2 = db.relationship('Document',        
+        backref=db.backref('order_document', lazy=True))
 
         def __repr__(self):
             return '<Order_Document %r>' % self.name
@@ -134,12 +143,14 @@ def create_app(test_config=None):
         #)
         role = db.relationship("Design", 
         backref=db.backref('design_document', lazy=True))
+        role2 = db.relationship('Document',
+        backref=db.backref('design_document', lazy=True))
 
         def __repr__(self):
             return '<Design_Document %r>' % self.name
 
     class Order(db.Model):
-        id = db.Column(db.Integer, primary_key=True, unique=True)
+        id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
         client_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
         design_id = db.Column(db.Integer, db.ForeignKey('design.id'), primary_key=True)
 
@@ -154,18 +165,14 @@ def create_app(test_config=None):
             return '<Order %r>' % self.order_status
 
     class Document(db.Model):
-        id = db.Column(db.Integer, primary_key=True, unique=True)
+        id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
         author_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
 
         title = db.Column(db.String(100), nullable=False)
         creation_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now())
         document_type = db.Column(db.String(20))
         document_link = db.Column(db.Text)
- 
-        role = db.relationship('Order_Document',        
-        backref=db.backref('document', lazy=True))
-        role2 = db.relationship('Design_Document',
-        backref=db.backref('document', lazy=True))
+
         role3 = db.relationship('User',
         backref=db.backref('document', lazy=True))
 
@@ -189,7 +196,7 @@ def create_app(test_config=None):
             return '<User %r>' % self.username
 
     class Design(db.Model):
-        id = db.Column(db.Integer, primary_key=True, unique=True)
+        id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
 
         title = db.Column(db.String(20), nullable=False)
         description = db.Column(db.Text, nullable=False)
@@ -251,6 +258,46 @@ def create_app(test_config=None):
         user = db.one_or_404(db.select(User).filter_by(id=id))
         return render_template("user.html", user = user)
     
+    @app.route('/admin/documents', methods=['GET', 'POST'])
+    def upload_document():
+        form = DocumentUploadForm()
+        if form.validate_on_submit():
+            # Get user information (replace with your logic)
+
+            # Get uploaded file
+            uploaded_file = form.file.data
+
+            # Generate filename (optional, replace with your logic)
+            filename = uploaded_file.filename
+
+            # Create a new document record
+            new_document = Document(
+                title=form.title.data,
+                author_id=current_user.id,
+                creation_date=datetime.datetime.now(),
+                document_type=form.document_type.data,
+                document_link=filename  # Update if storing filepath instead of link
+            )
+
+            # Add document to database and commit
+            db.session.add(new_document)
+             # Save the file (replace with your storage logic)
+            uploaded_file.save(os.path.join(app.static_folder, f'documents/{filename}'))
+
+            db.session.commit()
+
+            # Flash message (optional)
+            flash('Document uploaded successfully!', 'success')
+
+            return redirect(url_for('upload_document'))
+        
+        docs = Document.query.all() 
+        orders = Order.query.all()
+        for order in orders:
+            order.username = User.query.filter_by(id=order.client_id).first().username
+        designs = Design.query.all() 
+        return render_template('admin/documents.html', form=form, docs=docs, orders=orders, designs=designs)
+    
     @app.route('/profile')
     @login_required
     def profile():
@@ -295,6 +342,36 @@ def create_app(test_config=None):
                 if os.path.isfile(os.path.join(design_path, filename)):  # Check if file
                     design.images.append(url_for('static', filename=f'designs/{design.id}/{filename}'))
         return jsonpickle.encode(design)
+    
+    @app.route('/api/document/<id>', methods=['DELETE'])
+    def delete_doc(id):
+        me = db.one_or_404(db.select(Document).filter_by(id=id))
+        if me != None:
+            db.session.delete(me)
+            os.remove(os.path.join(app.static_folder, f'documents/{me.document_link}'))
+            db.session.commit()
+        else:
+            print("Error!")
+            flash('Entry not found.')
+        return jsonpickle.encode({'message': 'Document deleted successfully'})
+    
+    @app.route('/api/design_document', methods=['POST'])
+    def link_design_doc():
+        # Access data from request.json
+        document_id = request.json.get('document_id')
+        design_id = request.json.get('design_id')
+        name = request.json.get('name')
+
+        design_doc = Design_Document(
+            design_id=design_id,
+            document_id=document_id,
+            name=name
+        )
+
+        db.session.add(design_doc)
+        db.session.commit()
+
+        return jsonpickle.encode({'message': 'Data received successfully!'})
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -375,6 +452,6 @@ def create_app(test_config=None):
                 flash('Wrong.')
 
         table = Design.query.all()    
-        return render_template("admin/admin_designs.html", table=table, form=form)
+        return render_template("admin/designs.html", table=table, form=form)
     
     return app

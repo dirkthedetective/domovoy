@@ -65,3 +65,6 @@ calcButton.addEventListener('click', async () => {
 
     sum.innerHTML = "Сумма заказа: " + (designData.price + 0.25 * floorCount * designData.price + 0.01 * designData.price * slider.value) + "р.";
 })
+
+
+//test.addEventListener('click', )

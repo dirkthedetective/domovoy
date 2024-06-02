@@ -1,0 +1,94 @@
+{% extends "index.html" %}
+{% block content %}
+<style>
+  .toBeReplaced span {
+    display: none;
+  }
+
+  .toBeReplaced:after {
+    content: "Администрирование";
+  }
+
+  .adminpanel h1,
+  p {
+    color: yellow;
+  }
+</style>
+<div class="adminpanel">
+  <h1>Загрузить документ</h1>
+  {% with messages = get_flashed_messages(with_categories=True) %}
+  {% if messages %}
+  <ul class="messages">
+    {% for category, message in messages %}
+    <li class="alert alert-{{ category }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+  <form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      {{ form.title.label }} {{ form.title(size=30) }}
+      <span class="error">{{ form.title.errors }}</span>
+    </div>
+    <div class="form-group">
+      {{ form.document_type.label }} {{ form.document_type(size=30) }}
+    </div>
+    <div class="form-group">
+      {{ form.file.label }} {{ form.file(size=30) }}
+      <span class="error">{{ form.file.errors }}</span>
+    </div>
+    <div class="form-group">
+      {{ form.submit }}
+    </div>
+  </form>
+</div>
+<br>
+<div class=adminpanel>
+  <h1> Администрирование базы данных </h1>
+  <br>
+  <p>Документы</p>
+  <table id="demo" border="1" cellpadding="7" cellspacing="1">
+    <tr bgcolor="#eeeeee">
+      <td>ID</td>
+      <td>Название</td>
+      <td>Автор</td>
+      <td>Дата создания</td>
+      <td>Тип</td>
+      <td>Просмотр</td>
+      <td>Удалить</td>
+    </tr>
+    {% for u in docs %}
+    <tr bgcolor="white">
+      <td>{{ u.id }}</td>
+      <td>{{ u.title }}</td>
+      <td>{{ u.author_id }}</td>
+      <td>{{ u.creation_date }}</td>
+      <td>{{ u.document_type }}</td>
+      {% set filename = "documents/" + u.document_link %}
+      <td><a href="{{ url_for('static', filename=filename) }}" class="btn btn-primary">View Document</a></td>
+      <td><button class="delete" name="{{u.id}}">&times</button></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+<br>
+<div class=adminpanel>
+  <h1> Связать документы </h1>
+  <select id="documentos">
+    <option value="first" selected> </option>
+    {% for doc in docs %}
+    <option value="{{doc.id}}">{{doc.title}}</option>
+    {% endfor %}
+  </select>
+  <select id="designos">
+    <option value="first" selected> </option>
+    {% for design in designs %}
+    <option value="{{design.id}}">{{design.title}}</option>
+    {% endfor %}
+  </select>
+  <button id="link">Связать</button>
+  <br>
+</div>
+<script src="{{ url_for('static', filename='scripts/documentos.js') }}"></script>
+{% endblock %}
